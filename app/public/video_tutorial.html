@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Tutorial TimetableMaster</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+</head>
+<body class="bg-transparent text-[var(--foreground)] antialiased p-0 m-0 font-sans">
+  <div class="py-2 space-y-4 max-w-4xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[var(--card-border)]">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-600 text-white font-bold text-xs">TM</span>
+          <h2 class="text-base font-bold text-[var(--foreground)]">Video Tutorial &amp; Panduan Penggunaan TimetableMaster</h2>
+        </div>
+        <p class="text-xs text-[var(--muted-foreground)] mt-0.5">
+          Panduan langkah demi langkah menyusun jadwal sekolah bebas bentrok berbasis AI (100% Bahasa Indonesia)
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="http://localhost:3000/workspace/" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-xs font-semibold hover:bg-indigo-700 transition">
+          <span>Buka Aplikasi</span>
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Video Player Screen -->
+    <div class="relative overflow-hidden rounded-2xl border border-[var(--card-border)] bg-slate-950 text-white shadow-xl">
+      <!-- Screen Display -->
+      <div id="videoScreen" class="relative w-full aspect-[16/9] flex flex-col justify-between p-6 sm:p-10 select-none transition-all duration-300" style="background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.25) 0%, rgba(15, 23, 42, 0.95) 70%);">
+        
+        <!-- Top Bar inside Video -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span id="badgeStep" class="px-3 py-1 rounded-full bg-indigo-600 text-white text-xs font-bold tracking-wider uppercase">PANDUAN 1</span>
+            <span id="badgeCategory" class="px-2.5 py-0.5 rounded-md bg-white/10 text-indigo-300 text-[11px] font-medium backdrop-blur">Tab: Data Guru &amp; Sekolah</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-white/70">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="videoTime">00:00 / 01:04</span>
+          </div>
+        </div>
+
+        <!-- Center Slide Content -->
+        <div class="my-auto py-4">
+          <h3 id="slideTitle" class="text-xl sm:text-3xl font-extrabold tracking-tight text-white leading-tight">
+            Memulai Aplikasi Jadwal Sekolah
+          </h3>
+          <p id="slideSubtitle" class="mt-2 text-xs sm:text-base text-indigo-200/90 font-medium max-w-2xl">
+            Akses langsung ruang kerja jadwal di http://localhost:3000/workspace/ tanpa perlu login atau API key.
+          </p>
+
+          <!-- Dynamic Feature Points Card -->
+          <div id="slidePointsContainer" class="mt-4 sm:mt-6 grid sm:grid-cols-2 gap-2.5 sm:gap-3 max-w-3xl">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <!-- Bottom Subtitle / Narration Banner inside Video -->
+        <div class="rounded-xl bg-black/60 backdrop-blur border border-white/10 p-3 flex items-start gap-3">
+          <span class="px-2 py-0.5 rounded bg-indigo-500/30 text-indigo-300 text-[10px] font-bold shrink-0 mt-0.5">SUBTITLE</span>
+          <p id="subtitlesText" class="text-xs sm:text-sm text-white/90 leading-snug">
+            Selamat datang di TimetableMaster! Panduan ini akan memandu Anda menyusun jadwal sekolah lengkap dari awal.
+          </p>
+        </div>
+      </div>
+
+      <!-- Playback Controls Bar -->
+      <div class="border-t border-white/10 bg-slate-900/90 px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2">
+          <!-- Play / Pause Button -->
+          <button id="btnPlay" type="button" class="flex items-center justify-center w-9 h-9 rounded-full bg-indigo-600 text-white font-bold hover:bg-indigo-500 transition shadow">
+            <span id="playIcon">▶</span>
+          </button>
+          <!-- Prev / Next Chapter -->
+          <button id="btnPrev" type="button" class="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition">
+            ⏮ Bab Sebelumnya
+          </button>
+          <button id="btnNext" type="button" class="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium text-xs transition">
+            Bab Berikutnya ⏭
+          </button>
+        </div>
+
+        <!-- Progress Timeline Bar -->
+        <div class="flex-1 min-w-[140px] flex items-center gap-2">
+          <input id="timelineSlider" type="range" min="0" max="7" value="0" step="1" class="w-full accent-indigo-500 cursor-pointer" />
+        </div>
+
+        <!-- Audio & Speed Controls -->
+        <div class="flex items-center gap-2">
+          <button id="btnVoice" type="button" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition flex items-center gap-1.5" title="Suara Narasi Otomatis (Bahasa Indonesia)">
+            <span id="voiceIcon">🔊</span>
+            <span id="voiceLabel">Suara Narasi: Aktif</span>
+          </button>
+          <select id="selectSpeed" class="rounded-lg bg-white/10 text-white border border-white/20 px-2 py-1 text-xs focus:outline-none">
+            <option value="1" class="text-black">1.0x (Normal)</option>
+            <option value="1.25" class="text-black">1.25x</option>
+            <option value="1.5" class="text-black">1.5x</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter Playlist Selector -->
+    <div class="rounded-2xl border border-[var(--card-border)] bg-[var(--card)] p-4">
+      <h4 class="text-xs font-bold uppercase tracking-wider text-[var(--muted-foreground)] mb-3">
+        Daftar Bab &amp; Topik Tutorial (8 Bagian)
+      </h4>
+      <div id="chaptersGrid" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Download & Quick Links -->
+    <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 text-xs">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl">📥</span>
+        <div>
+          <div class="font-bold text-indigo-950 dark:text-indigo-200">Unduh Video Tutorial MP4</div>
+          <div class="text-[var(--muted-foreground)]">Format MP4 Full HD 1080p dapat diputar di HP, tablet, maupun komputer.</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="http://localhost:3000/tutorial_video.mp4" download="tutorial_timetablemaster.mp4" class="px-4 py-2 rounded-full bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition shadow-sm">
+          Unduh File Video (.MP4) ↓
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CHAPTERS = [
+      {
+        id: 0,
+        badge: "BAGIAN 1",
+        category: "Pengenalan",
+        title: "Panduan Lengkap Penyusunan Jadwal Sekolah",
+        subtitle: "TimetableMaster: Aplikasi Penjadwalan Otomatis Berbasis AI (100% Bahasa Indonesia)",
+        subtitles: "Selamat datang di TimetableMaster! Pada panduan ini kita akan belajar menyusun jadwal pelajaran sekolah secara otomatis bebas bentrok, mengatur guru piket, izin cuti guru, dan kalender kegiatan.",
+        points: [
+          { title: "⚡ Otomatis Bebas Bentrok", desc: "Menyusun hingga 30+ kelas (750 jam) dalam 300 milidetik." },
+          { title: "👥 Guru Piket & Pengganti", desc: "Rekomendasi guru pengganti otomatis dengan 1 klik." },
+          { title: "📝 Cuti & Kalender Terpadu", desc: "Sinkronisasi izin guru langsung ke jadwal mengajar." },
+          { title: "💾 Ekspor CSV & Backup JSON", desc: "Cetak jadwal per rombel dan simpan file cadangan." }
+        ]
+      },
+      {
+        id: 1,
+        badge: "BAGIAN 2",
+        category: "Tab: Data Guru & Sekolah",
+        title: "Langkah 1: Input Data Sekolah, Guru & Kelas",
+        subtitle: "Menyiapkan identitas sekolah, daftar guru pengajar, dan rombongan belajar.",
+        subtitles: "Langkah pertama, buka tab Data Guru dan Sekolah. Di sini Anda dapat mengganti nama sekolah, menambahkan nama guru dan mata pelajarannya, serta mem-paste daftar kelas sekaligus.",
+        points: [
+          { title: "✎ Ubah Nama Sekolah", desc: "Klik tombol Ubah Nama pada kartu identitas sekolah." },
+          { title: "👨‍🏫 Tambah Guru & Mapel", desc: "Ketik nama guru dan mapel kurikulum Indonesia (PJOK, IPA, dll)." },
+          { title: "🏫 Input Banyak Kelas", desc: "Paste daftar kelas dipisah koma (contoh: Kelas 10-A, Kelas 10-B)." },
+          { title: "🚪 Atur Ruang & Laboratorium", desc: "Daftarkan Lab IPA, CS Lab, Gym/Lapangan, dan Ruang Seni." }
+        ]
+      },
+      {
+        id: 2,
+        badge: "BAGIAN 3",
+        category: "Tab: Jadwal Pelajaran",
+        title: "Langkah 2: Generate Jadwal Otomatis AI (0 Bentrok)",
+        subtitle: "Menyusun jadwal seluruh kelas secara instan dengan mesin kecerdasan buatan.",
+        subtitles: "Langkah kedua, buka tab Jadwal Pelajaran. Klik tombol Buat Jadwal Otomatis AI. Dalam hitungan milidetik, seluruh jam pelajaran akan terisi rapi dengan 0 bentrok guru dan 0 bentrok ruangan.",
+        points: [
+          { title: "⚡ 1 Klik Generate AI", desc: "Algoritma Constraint Solver menyusun 750+ jam instan." },
+          { title: "📋 Aturan Penjadwalan Aktif", desc: "PJOK bukan jam terakhir, praktikum di Lab, maks 1 mapel per hari." },
+          { title: "🔗 Dukungan Kelas Gabungan", desc: "Izinkan 1 guru mengajar 2 kelas sekaligus di ruangan yang sama." },
+          { title: "🟢 Status Aman 0 Bentrok", desc: "Verifikasi visual hijau memastikan jadwal bebas tabrakan." }
+        ]
+      },
+      {
+        id: 3,
+        badge: "BAGIAN 4",
+        category: "Fitur: Slot Inspector",
+        title: "Langkah 3: Mengedit, Menukar & Mengunci Jam",
+        subtitle: "Pemeriksa jam pelajaran interaktif untuk penyesuaian khusus dan preferensi guru.",
+        subtitles: "Langkah ketiga, Anda bisa mengklik kotak pelajaran mana saja di tabel. Panel di sebelah kanan memungkinkan Anda mengubah mapel, menukar posisi jam, atau mengunci jam agar tidak berubah.",
+        points: [
+          { title: "🔍 Panel Pemeriksa Jam", desc: "Klik kotak mana saja untuk melihat guru, mapel, dan ruang." },
+          { title: "🔒 Kunci Jam (Lock Period)", desc: "Kunci jam tertentu agar tidak bergeser saat AI di-generate ulang." },
+          { title: "🔄 Mode Tukar Posisi", desc: "Klik Tukar Posisi Jam lalu klik jam lain di kelas yang sama." },
+          { title: "➕ Isi Kotak Kosong", desc: "Klik tombol Isi Jam di kotak Kosong untuk menambah pelajaran." }
+        ]
+      },
+      {
+        id: 4,
+        badge: "BAGIAN 5",
+        category: "Tab: Guru Piket",
+        title: "Langkah 4: Manajemen Guru Piket & Pengganti",
+        subtitle: "Solusi otomatis saat ada guru yang berhalangan hadir atau izin mendadak.",
+        subtitles: "Langkah keempat, jika ada guru yang berhalangan hadir, buka tab Guru Piket dan ubah statusnya menjadi Izin atau Absen. Sistem akan otomatis menampilkan jam kosong dan rekomendasi guru pengganti terbaik.",
+        points: [
+          { title: "🔴 Tandai Guru Izin / Absen", desc: "Klik tombol kehadiran untuk mengaktifkan status absen." },
+          { title: "📋 Antrean Jam Kosong Live", desc: "Jam mengajar guru tersebut otomatis masuk antrean piket." },
+          { title: "⭐ Rekomendasi Cerdas AI", desc: "Menilai kesesuaian mapel dan beban piket mingguan terendah." },
+          { title: "✅ Tugaskan dalam 1 Klik", desc: "Klik Tugaskan Piket, label ungu PIKET langsung muncul di tabel." }
+        ]
+      },
+      {
+        id: 5,
+        badge: "BAGIAN 6",
+        category: "Tab: Izin & Cuti Guru",
+        title: "Langkah 5: Pengajuan & Persetujuan Cuti Guru",
+        subtitle: "Sistem permohonan izin cuti resmi yang terintegrasi dengan pemotongan saldo.",
+        subtitles: "Langkah kelima, staf guru dapat mengajukan izin sakit, urusan pribadi, atau tugas dinas. Begitu pimpinan menyetujui, jadwal mengajar guru tersebut langsung dialihkan ke antrean guru piket.",
+        points: [
+          { title: "📝 Formulir Permohonan Cuti", desc: "Pilih nama guru, hari izin, durasi seharian atau setengah hari." },
+          { title: "👔 Persetujuan Pimpinan", desc: "Kepala Sekolah / Waka Kurikulum klik Setujui atau Tolak." },
+          { title: "🔄 Otomatis Masuk Antrean", desc: "Jam pelajaran guru yang disetujui cuti langsung butuh guru piket." },
+          { title: "📊 Pantau Sisa Saldo Cuti", desc: "Sistem memotong kuota cuti sakit, pribadi, dan tahunan otomatis." }
+        ]
+      },
+      {
+        id: 6,
+        badge: "BAGIAN 7",
+        category: "Tab: Kalender & AI Agent",
+        title: "Langkah 6: Agenda Kalender Sekolah & Asisten AI",
+        subtitle: "Sinkronisasi kegiatan akademik dan konsultasi interaktif dengan asisten cerdas.",
+        subtitles: "Langkah keenam, Anda dapat mendaftarkan ujian, upacara bendera, dan hari libur di Kalender Sekolah. Anda juga bisa mengobrol dengan Asisten AI berbahasa Indonesia untuk mendiagnosis jadwal.",
+        points: [
+          { title: "📅 Agenda Ujian & Kegiatan", desc: "Jadwalkan kegiatan sekolah yang langsung muncul di header tabel." },
+          { title: "🤖 Asisten Chat Interaktif", desc: "Tanyakan: Cek bentrok jadwal, Siapa yang absen, atau Beban guru." },
+          { title: "🎯 Tombol Aksi Mandiri", desc: "Asisten menyediakan tombol langsung untuk menyelesaikan masalah." },
+          { title: "🎓 Peminatan Siswa", desc: "Atur pilihan mapel elektif per siswa bebas tabrakan blok." }
+        ]
+      },
+      {
+        id: 7,
+        badge: "BAGIAN 8",
+        category: "Penyimpanan & Distribusi",
+        title: "Langkah 7: Ekspor CSV, Cetak PDF & Backup Data",
+        subtitle: "Mendistribusikan jadwal resmi ke kelas dan mengamankan database sekolah.",
+        subtitles: "Langkah terakhir, unduh jadwal Anda lewat tombol Ekspor CSV Kelas atau Ekspor Semua CSV untuk seluruh sekolah. Simpan juga cadangan JSON di laptop Anda agar data aman selamanya.",
+        points: [
+          { title: "📊 Ekspor CSV Kelas", desc: "Download file spreadsheet CSV untuk masing-masing kelas rombel." },
+          { title: "📑 Ekspor Semua (Master CSV)", desc: "Download seluruh jadwal sekolah dalam satu file master." },
+          { title: "🖨️ Cetak / Unduh PDF", desc: "Buka tata letak cetak rapi untuk ditempel di ruang kelas/guru." },
+          { title: "💾 Simpan Cadangan (JSON)", desc: "Simpan file database jadwal dan pulihkan kapan saja dengan aman." }
+        ]
+      }
+    ];
+
+    let currentChapter = 0;
+    let isPlaying = false;
+    let isVoiceEnabled = true;
+    let playbackSpeed = 1.0;
+    let timer = null;
+    let currentSpeech = null;
+
+    // Elements
+    const badgeStep = document.getElementById('badgeStep');
+    const badgeCategory = document.getElementById('badgeCategory');
+    const slideTitle = document.getElementById('slideTitle');
+    const slideSubtitle = document.getElementById('slideSubtitle');
+    const slidePointsContainer = document.getElementById('slidePointsContainer');
+    const subtitlesText = document.getElementById('subtitlesText');
+    const videoTime = document.getElementById('videoTime');
+    const btnPlay = document.getElementById('btnPlay');
+    const playIcon = document.getElementById('playIcon');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+    const timelineSlider = document.getElementById('timelineSlider');
+    const btnVoice = document.getElementById('btnVoice');
+    const voiceIcon = document.getElementById('voiceIcon');
+    const voiceLabel = document.getElementById('voiceLabel');
+    const selectSpeed = document.getElementById('selectSpeed');
+    const chaptersGrid = document.getElementById('chaptersGrid');
+
+    function renderChaptersGrid() {
+      chaptersGrid.innerHTML = CHAPTERS.map((ch) => `
+        <button type="button" onclick="goToChapter(${ch.id})" class="p-3 rounded-xl border text-left transition ${
+          currentChapter === ch.id
+            ? 'border-indigo-500 bg-indigo-50/70 dark:bg-indigo-950/40 text-indigo-950 dark:text-indigo-200 ring-2 ring-indigo-500/30'
+            : 'border-[var(--card-border)] bg-[var(--background)] hover:border-indigo-400 text-[var(--foreground)]'
+        }">
+          <div class="flex items-center justify-between text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+            <span>${ch.badge}</span>
+            <span class="text-[var(--muted-foreground)]">00:${String((ch.id * 8)).padStart(2, '0')}</span>
+          </div>
+          <div class="mt-1 font-bold text-xs line-clamp-1">${ch.title}</div>
+          <div class="text-[11px] text-[var(--muted-foreground)] line-clamp-1 mt-0.5">${ch.category}</div>
+        </button>
+      `).join('');
+    }
+
+    function renderSlide(idx) {
+      const ch = CHAPTERS[idx];
+      currentChapter = idx;
+      timelineSlider.value = idx;
+
+      badgeStep.textContent = ch.badge;
+      badgeCategory.textContent = ch.category;
+      slideTitle.textContent = ch.title;
+      slideSubtitle.textContent = ch.subtitle;
+      subtitlesText.textContent = ch.subtitles;
+
+      const sec = idx * 8;
+      videoTime.textContent = `00:${String(sec).padStart(2, '0')} / 01:04`;
+
+      slidePointsContainer.innerHTML = ch.points.map((p) => `
+        <div class="p-3 rounded-xl bg-white/5 border border-white/10 backdrop-blur">
+          <div class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+            <span class="inline-flex items-center justify-center w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 text-[10px]">✓</span>
+            <span>${p.title}</span>
+          </div>
+          <div class="mt-1 text-[11px] sm:text-xs text-white/70 leading-relaxed">${p.desc}</div>
+        </div>
+      `).join('');
+
+      renderChaptersGrid();
+
+      if (isPlaying && isVoiceEnabled) {
+        speakNarration(ch.subtitles);
+      }
+    }
+
+    function speakNarration(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'id-ID';
+      u.rate = playbackSpeed;
+      
+      // Auto advance to next chapter when speech ends if playing
+      u.onend = () => {
+        if (isPlaying) {
+          if (currentChapter < CHAPTERS.length - 1) {
+            goToChapter(currentChapter + 1);
+          } else {
+            pauseVideo();
+          }
+        }
+      };
+      currentSpeech = u;
+      window.speechSynthesis.speak(u);
+    }
+
+    function playVideo() {
+      isPlaying = true;
+      playIcon.textContent = '⏸';
+      if (isVoiceEnabled) {
+        speakNarration(CHAPTERS[currentChapter].subtitles);
+      } else {
+        clearInterval(timer);
+        timer = setInterval(() => {
+          if (currentChapter < CHAPTERS.length - 1) {
+            goToChapter(currentChapter + 1);
+          } else {
+            pauseVideo();
+          }
+        }, 8000 / playbackSpeed);
+      }
+    }
+
+    function pauseVideo() {
+      isPlaying = false;
+      playIcon.textContent = '▶';
+      clearInterval(timer);
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function togglePlay() {
+      if (isPlaying) {
+        pauseVideo();
+      } else {
+        playVideo();
+      }
+    }
+
+    function goToChapter(idx) {
+      if (idx < 0 || idx >= CHAPTERS.length) return;
+      currentChapter = idx;
+      renderSlide(idx);
+      if (isPlaying) {
+        playVideo();
+      }
+    }
+
+    // Event listeners
+    btnPlay.addEventListener('click', togglePlay);
+    btnPrev.addEventListener('click', () => goToChapter(currentChapter - 1));
+    btnNext.addEventListener('click', () => goToChapter(currentChapter + 1));
+    timelineSlider.addEventListener('input', (e) => goToChapter(parseInt(e.target.value, 10)));
+
+    btnVoice.addEventListener('click', () => {
+      isVoiceEnabled = !isVoiceEnabled;
+      if (isVoiceEnabled) {
+        voiceIcon.textContent = '🔊';
+        voiceLabel.textContent = 'Suara Narasi: Aktif';
+        if (isPlaying) speakNarration(CHAPTERS[currentChapter].subtitles);
+      } else {
+        voiceIcon.textContent = '🔇';
+        voiceLabel.textContent = 'Suara Narasi: Hening';
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      }
+    });
+
+    selectSpeed.addEventListener('change', (e) => {
+      playbackSpeed = parseFloat(e.target.value);
+      if (isPlaying) {
+        playVideo();
+      }
+    });
+
+    // Initialize
+    renderSlide(0);
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# CodeRabbit Configuration
+version: "2"
+reviews:
+  profile: "assertive"
+  high_level_summary: true
+  poem: false
+  request_changes_workflow: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+chat:
+  auto_reply: true

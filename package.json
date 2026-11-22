@@ -1,0 +1,21 @@
+{
+  "name": "jadwal-master",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistem Penyusun Jadwal Pelajaran Sekolah Otomatis AI (TimetableMaster Rebuild)",
+  "scripts": {
+    "dev": "npm --prefix app run dev",
+    "build": "npm --prefix app run build",
+    "start": "npm --prefix app run start",
+    "lint": "npm --prefix app run lint"
+  },
+  "keywords": [
+    "timetable",
+    "jadwal-sekolah",
+    "nextjs",
+    "typescript",
+    "tailwind"
+  ],
+  "author": "atiqpunya",
+  "license": "MIT"
+}
