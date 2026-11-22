@@ -200,3 +200,9 @@
    2. Updated multi-column formats: Guru (`Nama Guru;Mata Pelajaran;Beban Jam Mingguan`), Kelas (`Nama Kelas;Tingkat;Wali Kelas`), Ruangan (`Nama Ruangan;Tipe Ruangan;Kapasitas Siswa`), and Jadwal (`Kelas;Hari;Jam Ke;Mata Pelajaran;Nama Guru;Ruangan`).
    3. Updated `exportTimetableCsv` and `exportAllTimetablesCsv` to use semicolon (;) and Indonesian headers (`Jam Ke;Waktu;SENIN;SELASA;...`), with `\uFEFF` UTF-8 BOM encoding for seamless Excel viewing.
    4. Enhanced `parseDelimitedText` to automatically strip `sep=;` directives, prioritize semicolons for Indonesian Excel files, and gracefully handle tabs (`\t`) from clipboard copy-paste.
+- **2026-11-22 09:30**: GitHub Repository Push & Security Hardening:
+   1. Initialized Git repository tracking remote `https://github.com/atiqpunya/Jadwal_Master.git` on branch `main`.
+   2. Configured strict security guardrails via `.gitignore` (ignoring `.env*`, keys, credentials, `.next/`, `node_modules/`, `out/`, and benchmark/scrap artifacts).
+   3. Created root `package.json` with npm proxy scripts and `.coderabbit.yaml` for automated code reviews.
+   4. Created comprehensive Indonesian documentation `README.md` covering all 7 core modules, installation steps, and directory structure.
+   5. Successfully synchronized and pushed commit `d8b2809` directly to `origin/main`.
